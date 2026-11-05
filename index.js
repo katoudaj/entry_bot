@@ -27,10 +27,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
     const dateInput = new TextInputBuilder()
       .setCustomId('game-date')
-      .setLabel('日付（YYYY/MM/DD）')
-      .setPlaceholder('2026/11/07')
+      .setLabel('日付')
+      .setPlaceholder('例: 2026年11月7日')
       .setStyle(TextInputStyle.Short)
-      .setMaxLength(10)
+      .setMaxLength(100)
       .setRequired(true);
     const fieldInput = new TextInputBuilder()
       .setCustomId('game-field')
@@ -60,16 +60,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     return;
   }
 
-  let gameDate;
-  try {
-    gameDate = parseGameDate(interaction.fields.getTextInputValue('game-date').trim());
-  } catch (error) {
-    await interaction.reply({
-      content: error.message,
-      ephemeral: true,
-    });
-    return;
-  }
+  const gameDate = parseGameDate(interaction.fields.getTextInputValue('game-date').trim());
 
   const field = interaction.fields.getTextInputValue('game-field').trim();
   const comment = interaction.fields.getTextInputValue('comment').trim();
@@ -89,11 +80,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
   await interaction.deferReply({ ephemeral: true });
   const lines = [
-    '📅 参戦表明',
-    '',
     `<@${interaction.user.id}>`,
     '',
-    `**${gameDate.label}${field} に参加します！**`,
+    `**${gameDate.label} ${field} に参加します！**`,
   ];
   if (comment) {
     lines.push('', comment);
